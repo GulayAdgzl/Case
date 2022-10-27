@@ -18,7 +18,7 @@
 |                  
 |----🎯main.dart
 
-
+Library package:Provider- json_serializable
 
 
 https://user-images.githubusercontent.com/44726684/198242905-8f0177b4-e18f-46f6-b23b-dd3fc40720a6.mp4
