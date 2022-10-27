@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_full_learn/features/BkMobil/model/person_model.dart';
+import 'package:flutter_full_learn/features/BkMobil/view/card_screen.dart';
+
+import '../view/home_screen.dart';
 
 class ButtonViewModel extends ChangeNotifier {
-  String? _inputText;
-
   bool isLoading = false;
 
   void _changeLoading() {
@@ -10,11 +12,11 @@ class ButtonViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> controlTextValue() async {
+  Future<CardScreen> controlButtonValue() async {
     _changeLoading();
     await Future.delayed(const Duration(seconds: 1));
     _changeLoading();
 
-    return _inputText != null;
+    return CardScreen();
   }
 }
