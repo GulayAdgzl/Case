@@ -25,51 +25,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(leading: _loadingWidget()),
-      body: Container(
-        child: SafeArea(
-          child: FutureBuilder(
-            future: personService.fetchPersons(50),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<PersonModel>> snapshot) {
-              if (snapshot.hasData) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: _cardDetail(snapshot),
-                      ),
-                    ),
-                  ],
-                );
-              }
+    return ChangeNotifierProvider.value(
+        value: _buttonViewModel,
+        builder: (context, child) {
+          return Scaffold(
+            appBar: AppBar(leading: _loadingWidget()),
+            body: Container(
+              child: SafeArea(
+                child: FutureBuilder(
+                  future: personService.fetchPersons(50),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<PersonModel>> snapshot) {
+                    if (snapshot.hasData) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              child: _cardDetail(snapshot),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
 
-              if (snapshot.hasError) {
-                return const Center(
-                    child: Icon(
-                  Icons.error,
-                  color: ColorsItems.red,
-                  size: 82.0,
-                ));
-              }
+                    if (snapshot.hasError) {
+                      return const Center(
+                          child: Icon(
+                        Icons.error,
+                        color: ColorsItems.red,
+                        size: 82.0,
+                      ));
+                    }
 
-              return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  CircularProgressIndicator(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(StringText.loading)
-                ],
-              ));
-            },
-          ),
-        ),
-      ),
-    );
+                    return Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const <Widget>[
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(StringText.loading)
+                      ],
+                    ));
+                  },
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Card _cardDetail(AsyncSnapshot<List<PersonModel>> snapshot) {
@@ -100,16 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   TextButton _detailButton(BuildContext context) {
     return TextButton(
-        onPressed: _buttonViewModel.isLoading
-            ? null
-            : () {
-                _buttonViewModel.controlTextValue();
-
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return CardScreen();
-                }));
-              },
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return CardScreen();
+          }));
+        },
         child: Text(StringText.DetailButton,
             style: Theme.of(context)
                 .textTheme
