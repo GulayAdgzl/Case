@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_full_learn/features/BkMobil/Const/Project_text.dart';
 import 'package:flutter_full_learn/features/BkMobil/service/person_network_service.dart';
+import 'package:provider/provider.dart';
 
 import '../Const/Project_color.dart';
 import '../model/name_model.dart';
 import '../model/person_model.dart';
+import '../viewModel/Button_viewModel.dart';
 import 'card_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final PersonNetworkService personService = PersonNetworkService();
+  late final ButtonViewModel _buttonViewModel;
+  @override
+  void initState() {
+    super.initState();
+    _buttonViewModel = ButtonViewModel();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(leading: _loadingWidget()),
       body: Container(
         child: SafeArea(
           child: FutureBuilder(
@@ -86,15 +100,33 @@ class HomeScreen extends StatelessWidget {
 
   TextButton _detailButton(BuildContext context) {
     return TextButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return CardScreen();
-          }));
-        },
+        onPressed: _buttonViewModel.isLoading
+            ? null
+            : () {
+                _buttonViewModel.controlTextValue();
+
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return CardScreen();
+                }));
+              },
         child: Text(StringText.DetailButton,
             style: Theme.of(context)
                 .textTheme
                 .subtitle2
                 ?.copyWith(color: ColorsItems.red)));
+  }
+
+  Widget _loadingWidget() {
+    return Selector<ButtonViewModel, bool>(
+      selector: (context, viewModel) {
+        return viewModel.isLoading;
+      },
+      builder: (context, value, child) {
+        return value
+            ? const Center(child: CircularProgressIndicator())
+            : const SizedBox();
+      },
+    );
   }
 }
